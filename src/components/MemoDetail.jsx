@@ -1,11 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { 
-  Box, 
-  TextField, 
-  Typography, 
-  IconButton 
-} from '@mui/material';
+import { Box, TextField, Typography, IconButton } from '@mui/material';
 import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 import RenameDialog from './RenameDialog';
 import { memoService } from '../services/db';

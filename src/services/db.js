@@ -6,23 +6,23 @@ const MEMO_STORE = 'memos';
 // データベース初期化の単一のエントリーポイント
 const openDB = () => {
   return new Promise((resolve, reject) => {
-    console.log(`Opening database: ${DB_NAME}, version: ${DB_VERSION}`);
+    console.log(`データベースを開いています: ${DB_NAME}, バージョン: ${DB_VERSION}`);
     const request = indexedDB.open(DB_NAME, DB_VERSION);
 
     request.onupgradeneeded = (event) => {
-      console.log(`Upgrading database to version ${DB_VERSION}`);
+      console.log(`データベースをバージョン ${DB_VERSION} にアップグレードしています`);
       const db = event.target.result;
       
       // フォルダストアの作成
       if (!db.objectStoreNames.contains(FOLDER_STORE)) {
-        console.log(`Creating object store: ${FOLDER_STORE}`);
+        console.log(`オブジェクトストアを作成中: ${FOLDER_STORE}`);
         const folderStore = db.createObjectStore(FOLDER_STORE, { keyPath: 'id', autoIncrement: true });
         folderStore.createIndex('name', 'name', { unique: false });
       }
       
       // メモストアの作成
       if (!db.objectStoreNames.contains(MEMO_STORE)) {
-        console.log(`Creating object store: ${MEMO_STORE}`);
+        console.log(`オブジェクトストアを作成中: ${MEMO_STORE}`);
         const memoStore = db.createObjectStore(MEMO_STORE, { keyPath: 'id', autoIncrement: true });
         memoStore.createIndex('folderId', 'folderId', { unique: false });
         memoStore.createIndex('updatedAt', 'updatedAt', { unique: false });
@@ -30,12 +30,12 @@ const openDB = () => {
     };
 
     request.onsuccess = (event) => {
-      console.log('Database opened successfully');
+      console.log('データベースが正常に開かれました');
       resolve(event.target.result);
     };
     
     request.onerror = (event) => {
-      console.error('Error opening database:', event.target.error);
+      console.error('データベース開始エラー:', event.target.error);
       reject(event.target.error);
     };
   });
@@ -44,16 +44,16 @@ const openDB = () => {
 // 既存のデータベースをリセットする関数
 const resetDatabase = () => {
   return new Promise((resolve, reject) => {
-    console.log('Attempting to delete existing database...');
+    console.log('既存のデータベースを削除しています...');
     const deleteRequest = indexedDB.deleteDatabase(DB_NAME);
     
     deleteRequest.onsuccess = () => {
-      console.log('Database deleted successfully, now recreating...');
+      console.log('データベースが正常に削除されました。再作成しています...');
       openDB().then(resolve).catch(reject);
     };
     
     deleteRequest.onerror = (event) => {
-      console.error('Error deleting database:', event.target.error);
+      console.error('データベース削除エラー:', event.target.error);
       reject(event.target.error);
     };
   });
@@ -64,17 +64,17 @@ const initializeDatabase = async () => {
   try {
     const db = await openDB();
     const storeNames = Array.from(db.objectStoreNames);
-    console.log('Current object stores:', storeNames);
+    console.log('現在のオブジェクトストア:', storeNames);
     
     // 必要なストアが存在するか確認
     if (!storeNames.includes(FOLDER_STORE) || !storeNames.includes(MEMO_STORE)) {
-      console.warn('Required object stores not found. Resetting database...');
+      console.warn('必要なオブジェクトストアが見つかりません。データベースをリセットしています...');
       return resetDatabase();
     }
     
     return db;
   } catch (error) {
-    console.error('Error during database initialization:', error);
+    console.error('データベース初期化中のエラー:', error);
     // エラーが発生した場合、データベースをリセットして再作成
     return resetDatabase();
   }
@@ -84,9 +84,9 @@ const initializeDatabase = async () => {
 (async () => {
   try {
     await initializeDatabase();
-    console.log('Database initialization complete');
+    console.log('データベース初期化が完了しました');
   } catch (error) {
-    console.error('Database initialization failed:', error);
+    console.error('データベース初期化に失敗しました:', error);
   }
 })();
 
@@ -104,7 +104,7 @@ export const folderService = {
         request.onerror = (event) => reject(event.target.error);
       });
     } catch (error) {
-      console.error('Error in folderService.getAll:', error);
+      console.error('フォルダの取得中にエラーが発生しました:', error);
       throw error;
     }
   },
@@ -160,7 +160,7 @@ export const memoService = {
         request.onerror = (event) => reject(event.target.error);
       });
     } catch (error) {
-      console.error('Error in memoService.getAll:', error);
+      console.error('memoService.getAllでのエラー:', error);
       throw error;
     }
   },
@@ -178,7 +178,7 @@ export const memoService = {
         request.onerror = (event) => reject(event.target.error);
       });
     } catch (error) {
-      console.error('Error in memoService.getByFolder:', error);
+      console.error('memoService.getByFolderでのエラー:', error);
       throw error;
     }
   },
@@ -200,7 +200,7 @@ export const memoService = {
       const db = await initializeDatabase();
       return new Promise((resolve, reject) => {
         if (!db.objectStoreNames.contains(MEMO_STORE)) {
-          return reject(new Error(`Object store ${MEMO_STORE} not found`));
+          return reject(new Error(`オブジェクトストア ${MEMO_STORE} が見つかりません`));
         }
         
         const transaction = db.transaction(MEMO_STORE, 'readwrite');
@@ -213,21 +213,21 @@ export const memoService = {
           updatedAt: memo.updatedAt || new Date()
         };
         
-        console.log('Adding memo to database:', memoWithDates);
+        console.log('メモをデータベースに追加しています:', memoWithDates);
         const request = store.add(memoWithDates);
         
         request.onsuccess = () => {
-          console.log('Memo added successfully, ID:', request.result);
+          console.log('メモが正常に追加されました。ID:', request.result);
           resolve(request.result);
         };
         
         request.onerror = (event) => {
-          console.error('Error adding memo:', event.target.error);
+          console.error('メモ追加エラー:', event.target.error);
           reject(event.target.error);
         };
       });
     } catch (error) {
-      console.error('Critical error in memoService.add:', error);
+      console.error('memoService.addでの重大なエラー:', error);
       throw error;
     }
   },

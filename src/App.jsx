@@ -2,12 +2,9 @@ import React from 'react';
 import { BrowserRouter, Routes, Route, Outlet } from 'react-router-dom';
 import { Box, Typography, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-// サイドバーをインポート
 import Sidebar from './components/Sidebar';
-// フォルダリストコンポーネントをインポート
 import FolderList from './components/FolderList';
 import MemoList from './components/MemoList';
-// MemoDetailコンポーネントをインポート
 import MemoDetail from './components/MemoDetail';
 import Settings from './components/Settings';
 

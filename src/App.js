@@ -18,11 +18,11 @@ function App() {
     }
   }, []);
 
-  // サイト名が変更されたらローカルストレージに保存
-  const handleSiteNameChange = (newName) => {
-    setSiteName(newName);
-    localStorage.setItem('siteName', newName);
-  };
+  // // サイト名が変更されたらローカルストレージに保存
+  // const handleSiteNameChange = (newName) => {
+  //   setSiteName(newName);
+  //   localStorage.setItem('siteName', newName);
+  // };
 
   return (
     <div className="app-container">
