@@ -15,14 +15,14 @@ const openDB = () => {
       
       // フォルダストアの作成
       if (!db.objectStoreNames.contains(FOLDER_STORE)) {
-        console.log(`オブジェクトストアを作成中: ${FOLDER_STORE}`);
+        console.log(`フォルダストアを作成中: ${FOLDER_STORE}`);
         const folderStore = db.createObjectStore(FOLDER_STORE, { keyPath: 'id', autoIncrement: true });
         folderStore.createIndex('name', 'name', { unique: false });
       }
       
       // メモストアの作成
       if (!db.objectStoreNames.contains(MEMO_STORE)) {
-        console.log(`オブジェクトストアを作成中: ${MEMO_STORE}`);
+        console.log(`メモストアを作成中: ${MEMO_STORE}`);
         const memoStore = db.createObjectStore(MEMO_STORE, { keyPath: 'id', autoIncrement: true });
         memoStore.createIndex('folderId', 'folderId', { unique: false });
         memoStore.createIndex('updatedAt', 'updatedAt', { unique: false });
